@@ -47,12 +47,13 @@ public class VendingMachine {
         }
     }
 
-    // Adds inserted money, to the deposit inventory
-    public void addBalance (Money money) {
+    // Adds inserted money to list of coins for the deposit
+    public void depositCoin(Money money) {
         currentBalance += money.getValue();
         depositedCoins.add(money);
     }
 
+    // Refunds the customer whatever coins were deposited and clears the current balance
     public List<Money> refund() {
         if (depositedCoins.isEmpty()) {
             return depositedCoins;
@@ -94,6 +95,10 @@ public class VendingMachine {
             return false;
         }
         return true;
+    }
+
+    public boolean isPaid() {
+        return paid;
     }
 
 
@@ -198,10 +203,6 @@ public class VendingMachine {
 
     public Drink getCurrentDrink() {
         return currentDrink;
-    }
-
-    public boolean isPaid() {
-        return paid;
     }
 
 

@@ -43,22 +43,22 @@ class VendingMachineTest {
     // Test Case 2: given an out-of-stock item, return an SoldOutException
     @Test
     void testGetPrice2() {
-        assertThrows(SoldOutException.class, () -> {vm.getPrice(Drink.LIME_SODA);});
+        assertThrows(SoldOutException.class, () -> vm.getPrice(Drink.LIME_SODA));
         assertNull(vm.getCurrentDrink());
     }
 
     // Test Case 3: given a non-existent item, return ItemDoesNotExistException
     @Test
     void testGetPrice3() {
-        assertThrows(ItemDoesNotExistException.class, () -> {vm.getPrice(Drink.TEST);});
+        assertThrows(ItemDoesNotExistException.class, () -> vm.getPrice(Drink.TEST));
         assertNull(vm.getCurrentDrink());
     }
 
     // Test Case 1: given a coin
     @Test
-    void testAddBalance1() {
-        vm.addBalance(Money.DIME);
-        vm.addBalance(Money.QUARTER);
+    void testDepositCoin() {
+        vm.depositCoin(Money.DIME);
+        vm.depositCoin(Money.QUARTER);
         List<Money> expected = new ArrayList<>();
         expected.add(Money.DIME);
         expected.add(Money.QUARTER);
@@ -70,7 +70,7 @@ class VendingMachineTest {
     // Test Case 1: when coins have been deposited
     @Test
     void testRefund1() {
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         List<Money> expected = new ArrayList<>();
         expected.add(Money.QUARTER);
 
@@ -111,7 +111,7 @@ class VendingMachineTest {
     @Test
     void testIsFullyPaid1() {
         vm.getPrice(Drink.COLA);
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         assertTrue(vm.hasSufficientFunds());
     }
 
@@ -119,8 +119,8 @@ class VendingMachineTest {
     @Test
     void testIsFullyPaid2() {
         vm.getPrice(Drink.COLA);
-        vm.addBalance(Money.DIME);
-        Exception e = assertThrows(InsufficientFundsException.class, () -> {vm.hasSufficientFunds();});
+        vm.depositCoin(Money.DIME);
+        assertThrows(InsufficientFundsException.class, () -> vm.hasSufficientFunds());
     }
 
     // Test Case 1: there is enough change for the amount requested in this case 50
@@ -138,14 +138,14 @@ class VendingMachineTest {
     // Test Case 2: there not enough change for the requested amount
     @Test
     void testGetChange2() {
-        Exception e = assertThrows(InsufficientChangeException.class, () -> {vm.getChange(1000);});
+        assertThrows(InsufficientChangeException.class, () -> vm.getChange(1000));
     }
 
     // Test Case 1: There is sufficient funds and sufficient change for the transaction to be completed
     @Test
     void testCollectChange1() {
-        vm.addBalance(Money.QUARTER);
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         vm.getPrice(Drink.COLA);
 
         List<Money> expected = new ArrayList<>();
@@ -160,34 +160,34 @@ class VendingMachineTest {
     // Test Case 2: There are insufficient funds
     @Test
     void testCollectChange2() {
-        vm.addBalance(Money.DIME);
+        vm.depositCoin(Money.DIME);
         vm.getPrice(Drink.COLA);
 
         assertEquals(10, vm.getCurrentBalance());
-        assertThrows(InsufficientFundsException.class, () -> {vm.collectChange();});
+        assertThrows(InsufficientFundsException.class, () -> vm.collectChange());
     }
 
     //Test Case 3: There is insufficient change
     @Test
     void testCollectChange3() {
         for (int i = 0; i < 5; i++) {
-            vm.addBalance(Money.QUARTER);
-            vm.addBalance(Money.QUARTER);
+            vm.depositCoin(Money.QUARTER);
+            vm.depositCoin(Money.QUARTER);
             vm.getPrice(Drink.DIET_COLA);
             vm.collectChange();
         }
 
-        vm.addBalance(Money.QUARTER);
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         vm.getPrice(Drink.DIET_COLA);
-        assertThrows(InsufficientChangeException.class, () -> {vm.collectChange();});
+        assertThrows(InsufficientChangeException.class, () -> vm.collectChange());
     }
 
     // Test Case 1: collecting the drink after paying for it
     @Test
     void testCollectDrink1() {
-        vm.addBalance(Money.QUARTER);
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         vm.getPrice(Drink.DIET_COLA);
         vm.collectChange();
         Drink actual = vm.collectDrink();
@@ -199,8 +199,8 @@ class VendingMachineTest {
     // Test Case 2: collecting drink without paying for it
     @Test
     void testCollectDrink2() {
-        vm.addBalance(Money.QUARTER);
-        vm.addBalance(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
+        vm.depositCoin(Money.QUARTER);
         vm.getPrice(Drink.DIET_COLA);
         Drink actual = vm.collectDrink();
         assertNull(actual);

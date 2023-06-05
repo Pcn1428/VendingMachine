@@ -31,13 +31,13 @@ public class Main {
                     item = processInput[1];
 
                     if (item.equalsIgnoreCase("QUARTER")) {
-                        vm.addBalance(Money.QUARTER);
+                        vm.depositCoin(Money.QUARTER);
                         vm.printState();
                     } else if (item.equalsIgnoreCase("DIME")) {
-                        vm.addBalance(Money.DIME);
+                        vm.depositCoin(Money.DIME);
                         vm.printState();
                     } else if (item.equalsIgnoreCase("NICKEL")) {
-                        vm.addBalance(Money.NICKEL);
+                        vm.depositCoin(Money.NICKEL);
                         vm.printState();
                     } else {
                         System.out.println("Invalid Coin!");

@@ -19,10 +19,6 @@ public class Inventory<T> {
         }
     }
 
-    public Map<T, Integer> getInventory() {
-        return inventory;
-    }
-
     // Adds a new item to inventory or adds to existing stock
     public void add(T item) {
         if (inventory.get(item) != null && hasItem(item)) {
